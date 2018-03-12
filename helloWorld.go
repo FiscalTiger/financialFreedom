@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"fmt"
-	"golang.org/x/net/html"
+	"bytes"
 )
 
 const (
@@ -14,8 +14,12 @@ func helloWorld(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World")
 }
 
-func acceptData(w http.ResponseWriter, r *http.Request) { 
-	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+func acceptData(w http.ResponseWriter, response *http.Request) {
+	buf := new(bytes.Buffer)
+  buf.ReadFrom(response.Body)
+  newStr := buf.String()
+
+	fmt.Fprintf(w, newStr)
 }
 
 func main() {
