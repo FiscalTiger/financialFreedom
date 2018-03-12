@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	"bytes"
+	"io"
 )
 
 const (
@@ -15,11 +16,15 @@ func helloWorld(w http.ResponseWriter, r *http.Request) {
 }
 
 func acceptData(w http.ResponseWriter, response *http.Request) {
-	buf := new(bytes.Buffer)
-  buf.ReadFrom(response.Body)
-  newStr := buf.String()
-
+	newStr :=  readCloserToString(response.Body)
 	fmt.Fprintf(w, newStr)
+}
+
+func readCloserToString(readCloser io.ReadCloser) (retVal string){
+	buf := new(bytes.Buffer)
+  buf.ReadFrom(readCloser)
+	retVal = buf.String()
+  return
 }
 
 func main() {
